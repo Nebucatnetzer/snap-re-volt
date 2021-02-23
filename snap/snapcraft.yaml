@@ -1,0 +1,77 @@
+name: re-volt # you probably want to 'snapcraft register <name>'
+base: core18 # the base snap is the execution environment for this snap
+version: "21.0125a" # just for humans, typically '1.2+git' or '1.3.2'
+summary: Re-Volt is an R/C car racing game from Acclaim, originally released in 1999.
+description: |
+  Re-Volt features great gameplay, realistic physics that still hold up to
+  this day and bright and colorful visuals. It's a game aimed at people who
+  just want to play a funky arcade racing game as well as for people who seek
+  a more competitive challenge. It's meant for all ages and occasions: Play
+  for yourself or in the local network with friends, or even online!
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+parts:
+  re-volt:
+    plugin: python
+    build-packages:
+      - unzip
+      - wget
+    stage-packages:
+      - libgl1-mesa-dri
+      - libglu1-mesa
+      - libgl1-mesa-glx
+      - libpulse0
+      - libxcursor1
+      - libxinerama1
+      - libxrandr2
+      - libxi6
+      - libasound2
+    # my packages
+      - libsdl2-2.0-0
+      - libsdl2-image-2.0-0
+      - libopenal1
+      - libenet7
+      - libunistring2
+      - libjpeg8
+      - libpng16-16
+      - libtiff5
+      - libwebp6
+      - libvorbisfile3
+      - libflac8
+      - libmpg123-0
+      - libfluidsynth1
+    source: https://gitlab.com/re-volt/rvgl-installer.git
+    override-build: |
+      python3 $SNAPCRAFT_PART_SRC/install_rvgl.py < $SNAPCRAFT_PROJECT_DIR/snap/local/input.txt
+
+  desktop-glib-only:
+        build-packages:
+          - libglib2.0-dev
+        plugin: make
+        source: https://github.com/ubuntu/snapcraft-desktop-helpers.git
+        source-subdir: glib-only
+        stage-packages:
+          - libglib2.0-bin
+
+layout:
+  $SNAP/re-volt/profiles:
+    bind: $SNAP_DATA/profiles
+
+apps:
+  re-volt:
+    command: bin/desktop-launch $SNAP/re-volt/rvgl
+    #environment:
+    #  LD_LIBRARY_PATH: "$LD_LIBRARY_PATH:/usr/lib/$SNAPCRAFT_ARCH_TRIPLET/pulseaudio"
+    plugs:
+      - audio-playback
+      - desktop
+      - home
+      - joystick
+      - network
+      - network-bind
+      - opengl
+      - process-control
+      - screen-inhibit-control
+      - x11

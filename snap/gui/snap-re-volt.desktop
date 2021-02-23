@@ -1,0 +1,8 @@
+[Desktop Entry]
+Comment=Re-Volt port for Linux
+Terminal=false
+Name=Re-Volt
+Type=Application
+Categories=Game;ArcadeGame;
+Exec=re-volt
+Icon=${SNAP}/meta/gui/snap-re-volt.png
